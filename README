@@ -1,0 +1,57 @@
+
+		MERCURIAL PROMPT
+
+This set of scripts will show mercurial repository information in 
+your bash prompt
+
+FEATURES
+* Shows branch name, incoming and outgoing changesets, and working directory "dirtyness" (whether
+there's pending changes to commit)
+* Prompt color depending on the current host
+* Requires the a working keyring extension!! (password is not asked when a remote repository is 
+accessed)
+
+FILES
+* retrieve_repos_info.sh - gathers info for the monitored repos, and writes it to tmp files.
+* update_prompt.sh - updates the prompt reading the tmp files previously written. It launches
+	the retrieve_repos_info.sh script in the background
+* README - this file
+
+HOW TO INSTALL
+1) Save all files in a directory of your choice
+
+2) Configure:
+2.1) Edit update_prompt.sh file and add the directories you want to monitor to the MP_BRANCH_PATHS
+list.
+2.2) Set the name in MP_HOSTNAME of your hosted vm
+2.3) Set the refresh interval for the repositories (MP_SLEEP_BETWEEN_REFRESHES). For testing, you
+can set this to 1, until you make sure that this package works for you
+
+3) Source update_prompt.sh into your current bash shell (this will also launch the retrieve_repos_info.sh
+in the background)
+$ source <install_dir>/update_prompt.sh
+Tip: You can add it to your .bashrc
+
+4) Go to a monitored directory and behold your new prompt!!! :)
+You should see something like this:
+
+afernandez@local:~/src_tree [...user-video-chat: 4i/2o *]$
+
+TROUBLESHOOTING
+You can try to start retrieve_repos_info.sh in debug mode specifying the "-d" flag
+
+HOW IT WORKS
+There are two scripts in this package:
+* retrieve_repos_info.sh: it runs an infinite loop, checking the monitored folders for mercurial info.
+It writes this info to a file, which will be read by the other script. If the remote repository is not
+available, a question mark (?) will be shown
+* update_prompt.sh: it configures the bash prompt to execute a function. If current directory matches
+one of the monitored folders (or subfolder), mercurial information regarding the repository will be shown.
+To show this info, the file written by the previous script will be read. If there's no info available or the
+information is outdated, a question mark will be shown. 
+
+TO-DO
+* implement "--only-colors" command line option
+* Make colors configurable (themes)
+* Make prompt configurable
+* If password is asked in normal mode, this script won't work
